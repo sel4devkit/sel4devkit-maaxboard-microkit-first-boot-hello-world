@@ -19,11 +19,8 @@ endif
 #===========================================================
 # Layout
 #===========================================================
-DEP_PATH := dep
 TMP_PATH := tmp
 OUT_PATH := out
-
-DEP_SL4_PATH := ${DEP_PATH}/sel4
 
 #===========================================================
 # Usage
@@ -39,10 +36,6 @@ usage:
 #===========================================================
 # Target
 #===========================================================
-
-# Prefer relative. Only use where absolutely essential.
-ROOT_PATH := $(shell dirname $(realpath $(firstword ${MAKEFILE_LIST})))
-
 .PHONY: all
 all: ${OUT_PATH}/microkit-sdk-1.3.0
 
@@ -55,31 +48,17 @@ ${OUT_PATH}:
 ${DEP_SL4_PATH}/out/sel4:
 	make -C ${DEP_SL4_PATH} all
 
-${OUT_PATH}/microkit-sdk-1.3.0: ${TMP_PATH}/microkit/release/microkit-sdk-1.3.0 | ${OUT_PATH}
+${OUT_PATH}/microkit-sdk-1.3.0: ${TMP_PATH}/sel4devkit-maaxboard-microkit/out/microkit-sdk-1.3.0 | ${OUT_PATH}
 	cp -r $< $@
 
-${TMP_PATH}/microkit/release/microkit-sdk-1.3.0: ${DEP_SL4_PATH}/out/sel4 | ${TMP_PATH}
+${TMP_PATH}/sel4devkit-maaxboard-microkit/out/microkit-sdk-1.3.0: | ${TMP_PATH}
 	# Acquire.
-	git -C ${TMP_PATH} clone --branch "main" "git@github.com:seL4/microkit.git" microkit
-	git -C ${TMP_PATH}/microkit reset --hard "d5fb249bd6900e3b577c6a2f61cea41e2802b1e4"
-	# Adjust to use "0x50000000".
-	sed --in-place --expression "s/loader_link_address=0x40480000/loader_link_address=0x50000000/g" ${TMP_PATH}/microkit/build_sdk.py
-	# Adjust to use GCC 12.
-	sed --in-place --expression "s/aarch64-none-elf/aarch64-linux-gnu/g" ${TMP_PATH}/microkit/build_sdk.py ${TMP_PATH}/microkit/example/maaxboard/hello/Makefile ${TMP_PATH}/microkit/monitor/Makefile ${TMP_PATH}/microkit/loader/Makefile ${TMP_PATH}/microkit/libmicrokit/Makefile
-	# Increase stack size.
-	# Target: 1024*128=131072 bytes
-	# 131072-1 = 131071 = 1FFFF trimmed as 1FFF0
-	sed --in-place --expression "s/0xff0/0x1FFF0/g" ${TMP_PATH}/microkit/libmicrokit/src/crt0.s
-	sed --in-place --expression "s/_stack\[4096\]/_stack[131072]/g" ${TMP_PATH}/microkit/libmicrokit/src/main.c
-	# Python.
-	python -m venv ${TMP_PATH}/pyenv
-	. ${TMP_PATH}/pyenv/bin/activate ; pip install --requirement ${TMP_PATH}/microkit/requirements.txt
+	git -C ${TMP_PATH} clone --branch "main" "git@github.com:sel4devkit/sel4devkit-maaxboard-microkit.git" sel4devkit-maaxboard-microkit
 	# Build.
-	. ${TMP_PATH}/pyenv/bin/activate ; cd ${TMP_PATH}/microkit ; python build_sdk.py --sel4=${ROOT_PATH}/${DEP_SL4_PATH}/out/sel4 --skip-docs --boards maaxboard
+	make -C ${TMP_PATH}/sel4devkit-maaxboard-microkit all
 	
 .PHONY: clean
 clean:
-	make -C ${DEP_SL4_PATH} clean
 	rm -rf ${TMP_PATH}
 	rm -rf ${OUT_PATH}
 

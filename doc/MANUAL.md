@@ -23,14 +23,7 @@ make all
 
 Expected output where executed on target:
 ```
-Load address: 0x50000000
-Loading: #################################################################
-         #################################################################
-         #################################################
-         11 MiB/s
-done
-Bytes transferred = 2626228 (2812b4 hex)
-Step 3: Execute from Address (0x50000000)
+u-boot=> go 0x50000000
 ## Starting application at 0x50000000 ...
 LDR|INFO: altloader for seL4 starting
 LDR|INFO: Flags:                0x0000000000000001

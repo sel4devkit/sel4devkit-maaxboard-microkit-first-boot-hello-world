@@ -18,6 +18,7 @@ make
 
 Build program:
 ```
+make get
 make all
 ```
 

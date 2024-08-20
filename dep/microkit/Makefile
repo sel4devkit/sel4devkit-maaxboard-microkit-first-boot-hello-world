@@ -44,7 +44,7 @@ get: | ${TMP_PATH}
 	git -C ${TMP_PATH} clone --branch "main" "git@github.com:sel4devkit/sel4devkit-maaxboard-microkit.git" sel4devkit-maaxboard-microkit
 
 .PHONY: all
-all: ${OUT_PATH}/microkit-sdk-1.3.0
+all: ${OUT_PATH}/microkit-sdk-1.4.1
 
 ${TMP_PATH}:
 	mkdir ${TMP_PATH}
@@ -52,10 +52,10 @@ ${TMP_PATH}:
 ${OUT_PATH}:
 	mkdir ${OUT_PATH}
 
-${OUT_PATH}/microkit-sdk-1.3.0: ${TMP_PATH}/sel4devkit-maaxboard-microkit/out/microkit-sdk-1.3.0 | ${OUT_PATH}
+${OUT_PATH}/microkit-sdk-1.4.1: ${TMP_PATH}/sel4devkit-maaxboard-microkit/out/microkit-sdk-1.4.1 | ${OUT_PATH}
 	cp -r $< $@
 
-${TMP_PATH}/sel4devkit-maaxboard-microkit/out/microkit-sdk-1.3.0: ${TMP_PATH}/sel4devkit-maaxboard-microkit | ${TMP_PATH}
+${TMP_PATH}/sel4devkit-maaxboard-microkit/out/microkit-sdk-1.4.1: ${TMP_PATH}/sel4devkit-maaxboard-microkit | ${TMP_PATH}
 	make -C ${TMP_PATH}/sel4devkit-maaxboard-microkit all
 	
 .PHONY: clean

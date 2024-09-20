@@ -68,7 +68,7 @@ ${OUT_PATH}:
 ${OUT_PATH}/program.img: ${TMP_PATH}/loader.img | ${OUT_PATH}
 	cp $< $@
 
-${TMP_PATH}/loader.img: ${DEP_MKT_PATH}/out/microkit-sdk-1.4.1 | ${TMP_PATH}
+${TMP_PATH}/loader.img: | ${DEP_MKT_PATH}/out/microkit-sdk-1.4.1 ${TMP_PATH}
 	make -C ${DEP_MKT_PATH}/out/microkit-sdk-1.4.1/board/maaxboard/example/hello BUILD_DIR=${ROOT_PATH}/${TMP_PATH} MICROKIT_SDK=${ROOT_PATH}/${DEP_MKT_PATH}/out/microkit-sdk-1.4.1 MICROKIT_BOARD=maaxboard MICROKIT_CONFIG=debug
 
 .PHONY: clean
